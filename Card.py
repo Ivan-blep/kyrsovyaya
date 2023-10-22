@@ -23,6 +23,22 @@ class Ui_Dialog(object):
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setObjectName("tableWidget")
         self.verticalLayout.addWidget(self.tableWidget)
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.addData = QtWidgets.QLineEdit(self.frame)
+        self.addData.setObjectName("addData")
+        self.verticalLayout_2.addWidget(self.addData)
+        self.addDescription = QtWidgets.QLineEdit(self.frame)
+        self.addDescription.setObjectName("addDescription")
+        self.verticalLayout_2.addWidget(self.addDescription)
+        self.addItem = QtWidgets.QPushButton(self.frame)
+        self.addItem.setObjectName("addItem")
+        self.verticalLayout_2.addWidget(self.addItem)
+        self.verticalLayout.addWidget(self.frame, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -30,6 +46,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.addItem.setText(_translate("Dialog", "Add"))
 
 
 if __name__ == "__main__":
