@@ -76,6 +76,7 @@ class Ui_Register(object):
 "margin:10px;\n"
 "padding:7px;")
         self.phone_number.setObjectName("phone_number")
+        # self.phone_number.setInputMask("+38(000)000-00-00")
         self.verticalLayout_3.addWidget(self.phone_number)
         self.e_mail = QtWidgets.QLineEdit(self.frame_2)
         self.e_mail.setStyleSheet("background-color: rgba(0,0,0,0);\n"

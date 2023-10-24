@@ -21,6 +21,22 @@ class Ui_Dialog(object):
         self.tableWidget = QtWidgets.QTableWidget(Dialog)
         self.tableWidget.setRowCount(0)
         self.tableWidget.setColumnCount(2)
+
+        header = ["Data", "Description"]
+        self.tableWidget.setHorizontalHeaderLabels(header)
+        self.tableWidget.setWordWrap(True)
+        self.tableWidget.setColumnWidth(0, 200)
+        self.tableWidget.setColumnWidth(1, 700)
+
+        # total_width = self.tableWidget.width()
+        # column_widths = [0.2, 0.8]
+        #
+        # for i, width_ratio in enumerate(column_widths):
+        #     column_width = total_width * width_ratio
+        #     self.tableWidget.setColumnWidth(i, column_width)
+
+
+
         self.tableWidget.setObjectName("tableWidget")
         self.verticalLayout.addWidget(self.tableWidget)
         self.frame = QtWidgets.QFrame(Dialog)
