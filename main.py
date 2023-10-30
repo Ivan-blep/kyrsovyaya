@@ -7,6 +7,7 @@ from SignIn import Ui_SingIn
 from Register import Ui_Register
 from Card import Ui_Dialog
 from AdminPanel import Ui_AdminPanel
+from UserInterface import Ui_UserInterface
 
 
 class AdminPanelDialog(QtWidgets.QDialog):
@@ -70,7 +71,6 @@ class AdminPanelDialog(QtWidgets.QDialog):
         collection.update_one(query, new_root)
 
 
-
 class SignInDialog(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
@@ -105,11 +105,11 @@ class SignInDialog(QtWidgets.QDialog):
         if root == "admin":
             self.openAdminPanel()
         else:
-            self.openCard(phone_number, root)
+            self.openUserInterface(phone_number, root)
 
-    def openCard(self, phone_number, root):
+    def openUserInterface(self, phone_number, root):
         self.close()
-        card_dialog = CardDialog(phone_number, root)
+        card_dialog = UserInterface(phone_number, root)
         card_dialog.exec()
 
     def openAdminPanel(self):
@@ -161,6 +161,41 @@ class RegisterDialog(QtWidgets.QDialog):
         dialog.exec()
 
 
+class UserInterface(QtWidgets.QDialog):
+    def __init__(self, phone_number, root):
+        super().__init__()
+        self.ui = Ui_UserInterface()
+        self.ui.setupUi(self)
+
+        self.ui.frame_6.setVisible(False)
+
+        # self.phone_number = phone_number
+        self.roo2t = root
+
+        self.ui.card_button.clicked.connect(self.openFindByUser)
+        self.ui.find_button.clicked.connect(self.openCardByUser)
+
+    def openFindByUser(self):
+        self.ui.frame_6.setVisible(True)
+        self.ui.frame_6.setEnabled(True)
+
+    def openCardByUser(self):
+        mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
+        db = mongo["application"]
+        collection = db["users"]
+
+        user_phone_number = self.ui.phone_number_by_card.text()
+
+        if user_phone_number:
+            query = {"phone_number": user_phone_number}
+            document = collection.find_one(query)
+
+            if document:
+                self.ui.phone_number_by_card.clear()
+                dialog = CardDialog(user_phone_number, self.roo2t)
+                dialog.exec()
+
+
 class CardDialog(QtWidgets.QDialog):
     def __init__(self, phone_number, root):
         super().__init__()
@@ -181,10 +216,10 @@ class CardDialog(QtWidgets.QDialog):
         try:
             mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
             db = mongo["application"]
-            collection = db["cards"]
+            self.collection = db["cards"]
 
-            data = collection.find({"phone_number": self.phone_number}).sort("data", -1)
-            row_count = collection.count_documents({"phone_number": self.phone_number})
+            data = self.collection.find({"phone_number": self.phone_number}).sort("data", -1)
+            row_count = self.collection.count_documents({"phone_number": self.phone_number})
 
             self.ui.tableWidget.setRowCount(row_count)
 
@@ -206,8 +241,23 @@ class CardDialog(QtWidgets.QDialog):
         self.ui.tableWidget.setItem(current_row_count, 0, QTableWidgetItem(data))
         self.ui.tableWidget.setItem(current_row_count, 1, QTableWidgetItem(description))
 
-        # self.ui.addData.clear()
-        # self.ui.addDescription.clear()
+        self.ui.addData.clear()
+        self.ui.addDescription.clear()
+
+        self.addItemToDataBase(data, description)
+
+    def addItemToDataBase(self, data, description):
+        if self.phone_number and data and description:
+            new_document = {
+                "phone_number": self.phone_number,
+                "data": data,
+                "description": description
+            }
+            self.collection.insert_one(new_document)
+
+
+
+
 
 
 if __name__ == '__main__':
