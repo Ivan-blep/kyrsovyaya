@@ -1,13 +1,18 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QTableWidgetItem
+from bson import ObjectId
 from pymongo import MongoClient
 import sys
 
-from SignIn import Ui_SingIn
-from Register import Ui_Register
-from Card import Ui_Dialog
-from AdminPanel import Ui_AdminPanel
-from UserInterface import Ui_UserInterface
+from pymongo.errors import PyMongoError
+
+from UI.SignIn import Ui_SingIn
+from UI.Register import Ui_Register
+from UI.Card import Ui_Dialog
+from UI.AdminPanel import Ui_AdminPanel
+from UI.UserInterface import Ui_UserInterface
+from UI.Record import Ui_Record
+from UI.AddRecord import Ui_AddRecord
 
 
 class AdminPanelDialog(QtWidgets.QDialog):
@@ -196,15 +201,89 @@ class UserInterface(QtWidgets.QDialog):
                 dialog.exec()
 
 
+class AddRecordDialog(QtWidgets.QDialog):
+    def __init__(self, card):
+        super().__init__()
+        self.ui = Ui_AddRecord()
+        self.ui.setupUi(self)
+
+        self.card = card
+        self.ui.textEdit.setReadOnly(False)
+        self.ui.save_button.setText("Add to table")
+        self.ui.save_button.clicked.connect(self.addToTable)
+
+    def addToTable(self):
+        data = self.ui.data.toPlainText()
+        description = self.ui.textEdit.toPlainText()
+        self.card.addRecordToTable(data, description)
+        self.card.getAllRecord()
+        self.close()
+
+
+class RecordDialog(QtWidgets.QDialog):
+    def __init__(self, card, item, root):
+
+        mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
+        db = mongo["application"]
+        self.collection = db["cards"]
+
+        super().__init__()
+        self.ui = Ui_Record()
+        self.ui.setupUi(self)
+
+        self.dataOfRow = item["data"]
+        self.description = item["description"]
+        self._id = item["_id"]
+        self.card = card
+        self.ui.save_button.clicked.connect(self.changeData)
+
+        if root == "doctor":
+            self.ui.save_button.setVisible(True)
+            self.ui.save_button.setEnabled(True)
+            self.ui.textEdit.setReadOnly(False)
+
+        self.setData()
+
+    def changeData(self):
+        try:
+            result = self.collection.update_one({
+                "_id": ObjectId(self._id)
+            },
+                {
+                    "$set":
+                        {
+                            "description": self.ui.textEdit.toPlainText(),
+                            "status": "modify"
+                        }
+                })
+            if result.modified_count > 0:
+                print("Успешно обновлено")
+                self.card.getAllRecord()
+                self.close()
+            else:
+                print("Запись не найдена или не была изменена")
+        except PyMongoError as e:
+            print("Произошла ошибка при обновлении:", e)
+
+    def setData(self):
+        self.ui.data.setText(self.dataOfRow)
+        self.ui.textEdit.setText(self.description)
+
+
 class CardDialog(QtWidgets.QDialog):
     def __init__(self, phone_number, root):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
+        self.mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
+        self.db = self.mongo["application"]
+        self.collection = self.db["cards"]
+
+        self.root = root
         if root == "doctor":
             self.ui.frame.setEnabled(True)
-            self.ui.addItem.clicked.connect(self.addItemToTable)
+            self.ui.addItem.clicked.connect(self.openRecord)
         else:
             self.ui.frame.setEnabled(False)
             self.ui.frame.setVisible(False)
@@ -212,11 +291,12 @@ class CardDialog(QtWidgets.QDialog):
         self.phone_number = phone_number
         self.getAllRecord()
 
+        self.ui.tableWidget.cellClicked.connect(self.rowClicked)
+
     def getAllRecord(self):
         try:
-            mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
-            db = mongo["application"]
-            self.collection = db["cards"]
+            self.ui.tableWidget.clearContents()
+            self.ui.tableWidget.setRowCount(0)
 
             data = self.collection.find({"phone_number": self.phone_number}).sort("data", -1)
             row_count = self.collection.count_documents({"phone_number": self.phone_number})
@@ -227,13 +307,18 @@ class CardDialog(QtWidgets.QDialog):
                 print(document)
                 self.ui.tableWidget.setItem(i, 0, QTableWidgetItem(document.get('data')))
                 self.ui.tableWidget.setItem(i, 1, QTableWidgetItem(document.get('description')))
+                self.ui.tableWidget.setItem(i, 2, QTableWidgetItem(str(document.get("_id"))))
         except Exception as e:
             print("Произошла ошибка:", str(e))
 
-    def addItemToTable(self):
-        data = self.ui.addData.text()
-        description = self.ui.addDescription.text()
+    def openRecord(self):
+        try:
+            dialog = AddRecordDialog(self)
+            dialog.exec()
+        except Exception as e:
+            print(e)
 
+    def addRecordToTable(self, data, description):
         current_row_count = self.ui.tableWidget.rowCount()
 
         self.ui.tableWidget.insertRow(current_row_count)
@@ -255,9 +340,20 @@ class CardDialog(QtWidgets.QDialog):
             }
             self.collection.insert_one(new_document)
 
+    def rowClicked(self, row, col):
+        if row >= 0:
+            data_item = self.ui.tableWidget.item(row, 0)
+            description_item = self.ui.tableWidget.item(row, 1)
 
+            if data_item is not None and description_item is not None:
+                data = data_item.text()
+                description = description_item.text()
+                _id = self.ui.tableWidget.item(row, 2).text()
 
-
+                item = {"data": data, "description": description, "_id": _id}
+                print(f"Нажатие на строку {row}, data: {data}, description: {description}, {_id}")
+                dialog = RecordDialog(self, item, self.root)
+                dialog.exec()
 
 
 if __name__ == '__main__':

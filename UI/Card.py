@@ -14,19 +14,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(1131, 700)
+        Dialog.resize(1100, 700)
         Dialog.setMinimumSize(QtCore.QSize(1000, 500))
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.tableWidget = QtWidgets.QTableWidget(Dialog)
         self.tableWidget.setRowCount(0)
-        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setColumnCount(3)
 
         header = ["Data", "Description"]
         self.tableWidget.setHorizontalHeaderLabels(header)
         self.tableWidget.setWordWrap(True)
         self.tableWidget.setColumnWidth(0, 200)
         self.tableWidget.setColumnWidth(1, 700)
+        self.tableWidget.setColumnHidden(2, True)
 
         # total_width = self.tableWidget.width()
         # column_widths = [0.2, 0.8]
