@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidgetItem
 from bson import ObjectId
 from pymongo import MongoClient
@@ -248,7 +249,7 @@ class RecordDialog(QtWidgets.QDialog):
         try:
             result = self.collection.update_one({
                 "_id": ObjectId(self._id)
-            },
+                },
                 {
                     "$set":
                         {
@@ -308,6 +309,7 @@ class CardDialog(QtWidgets.QDialog):
                 self.ui.tableWidget.setItem(i, 0, QTableWidgetItem(document.get('data')))
                 self.ui.tableWidget.setItem(i, 1, QTableWidgetItem(document.get('description')))
                 self.ui.tableWidget.setItem(i, 2, QTableWidgetItem(str(document.get("_id"))))
+
         except Exception as e:
             print("Произошла ошибка:", str(e))
 

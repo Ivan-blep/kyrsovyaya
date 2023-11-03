@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
 
 class Ui_UserInterface(object):
@@ -23,7 +24,7 @@ class Ui_UserInterface(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.frame = QtWidgets.QFrame(UserInterface)
         self.frame.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.frame.setStyleSheet("background-color: rgb(146, 157, 255);")
+        self.frame.setStyleSheet("background-color:rgb(38, 45, 54);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
@@ -32,7 +33,17 @@ class Ui_UserInterface(object):
         self.pushButton = QtWidgets.QPushButton(self.frame)
         self.pushButton.setMaximumSize(QtCore.QSize(60, 16777215))
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.setStyleSheet("background-color: rgba(0,0,0,0);\n"
+"font-size: 16px;\n"
+"font-family: Times New Roman;\n"
+"min-width: 150px;\n"
+"min-height: 30px;\n"
+"color: rgba(255, 255, 255,100);\n"
+"border: 1px solid rgba(255, 255, 255,50);"
+                                      "")
+        self.pushButton.setCursor(Qt.PointingHandCursor)
         self.horizontalLayout_2.addWidget(self.pushButton)
+        self.horizontalLayout_2.setAlignment(QtCore.Qt.AlignRight)
         self.verticalLayout.addWidget(self.frame)
         self.frame_2 = QtWidgets.QFrame(UserInterface)
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -44,7 +55,7 @@ class Ui_UserInterface(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.frame_3 = QtWidgets.QFrame(self.frame_2)
         self.frame_3.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.frame_3.setStyleSheet("background-color: rgb(146, 157, 255);")
+        self.frame_3.setStyleSheet("background-color: rgb(38, 45, 54);")
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
@@ -62,15 +73,18 @@ class Ui_UserInterface(object):
         self.card_button = QtWidgets.QPushButton(self.frame_5)
         self.card_button.setMinimumSize(QtCore.QSize(50, 50))
         self.card_button.setObjectName("card_button")
+        self.card_button.setStyleSheet("background-color: rgb(230,179,51);\n"
+"font-size: 16px;\n"
+"font-family: Times New Roman;\n"
+"color:rgb(255,255,255);\n"
+"width: 200px;\n"
+"height: 40px;")
+        self.card_button.setCursor(Qt.PointingHandCursor)
         self.verticalLayout_3.addWidget(self.card_button)
-        self.zapisi_button = QtWidgets.QPushButton(self.frame_5)
-        self.zapisi_button.setMinimumSize(QtCore.QSize(50, 50))
-        self.zapisi_button.setObjectName("zapisi_button")
-        self.verticalLayout_3.addWidget(self.zapisi_button)
         self.verticalLayout_2.addWidget(self.frame_5)
         self.horizontalLayout.addWidget(self.frame_3)
         self.frame_4 = QtWidgets.QFrame(self.frame_2)
-        self.frame_4.setStyleSheet("background-color: rgb(255, 236, 216);")
+        self.frame_4.setStyleSheet("background-color: rgb(26,31,37);")
         self.frame_4.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_4.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_4.setObjectName("frame_4")
@@ -89,11 +103,28 @@ class Ui_UserInterface(object):
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.phone_number_by_card = QtWidgets.QLineEdit(self.frame_6)
         self.phone_number_by_card.setObjectName("phone_number_by_card")
+        self.phone_number_by_card.setStyleSheet("background-color: rgba(0,0,0,0);\n"
+                                        "color: rgba(255, 255, 255,200);\n"
+                                        "border: 1px solid rgba(255, 255, 255,50);\n"
+                                        "font-size: 16px;\n"
+                                        "font-family: Times New Roman;\n"
+                                        "width: 200px;\n"
+                                        "height: 20px; \n"
+                                        
+                                        "padding:7px;")
         self.verticalLayout_4.addWidget(self.phone_number_by_card)
         self.find_button = QtWidgets.QPushButton(self.frame_6)
         self.find_button.setMinimumSize(QtCore.QSize(200, 0))
         self.find_button.setMaximumSize(QtCore.QSize(200, 16777215))
         self.find_button.setObjectName("find_button")
+        self.find_button.setStyleSheet("background-color: rgb(230,179,51);\n"
+                                       "font-size: 16px;\n"
+                                       "font-family: Times New Roman;\n"
+                                       "color:rgb(255,255,255);\n"
+                                       "width: 200px;\n"
+                                       "height: 40px;\n"
+                                       "margin-left: 15px;")
+        self.find_button.setCursor(Qt.PointingHandCursor)
         self.verticalLayout_4.addWidget(self.find_button)
         self.verticalLayout_5.addWidget(self.frame_6, 0, QtCore.Qt.AlignHCenter)
         self.horizontalLayout.addWidget(self.frame_4)
@@ -107,7 +138,6 @@ class Ui_UserInterface(object):
         UserInterface.setWindowTitle(_translate("UserInterface", "Dialog"))
         self.pushButton.setText(_translate("UserInterface", "PushButton"))
         self.card_button.setText(_translate("UserInterface", "Card"))
-        self.zapisi_button.setText(_translate("UserInterface", "zapisi"))
         self.find_button.setText(_translate("UserInterface", "Find"))
 
 

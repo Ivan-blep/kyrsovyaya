@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
 
 class Ui_Register(object):
@@ -44,6 +45,7 @@ class Ui_Register(object):
 "max-height: 30px;\n"
 "color: rgba(255, 255, 255,100);\n"
 "border: 1px solid rgba(255, 255, 255,50);")
+        self.sign_in_button.setCursor(Qt.PointingHandCursor)
         self.sign_in_button.setObjectName("sign_in_button")
         self.horizontalLayout.addWidget(self.sign_in_button, 0, QtCore.Qt.AlignBottom)
         self.verticalLayout.addWidget(self.frame_3)
@@ -118,6 +120,7 @@ class Ui_Register(object):
 "color:rgb(255,255,255);\n"
 "width: 200px;\n"
 "height: 40px;")
+        self.apply_register.setCursor(Qt.PointingHandCursor)
         self.apply_register.setObjectName("apply_register")
         self.verticalLayout_2.addWidget(self.apply_register, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.frame)

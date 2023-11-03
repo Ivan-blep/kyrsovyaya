@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
 
 class Ui_SingIn(object):
@@ -44,6 +45,7 @@ class Ui_SingIn(object):
 "max-height: 30px;\n"
 "color: rgba(255, 255, 255,100);\n"
 "border: 1px solid rgba(255, 255, 255,50);")
+        self.register_button.setCursor(Qt.PointingHandCursor)
         self.register_button.setObjectName("register_button")
         self.horizontalLayout_2.addWidget(self.register_button, 0, QtCore.Qt.AlignBottom)
         self.verticalLayout.addWidget(self.frame_3)
@@ -95,6 +97,7 @@ class Ui_SingIn(object):
 "color:rgb(255,255,255);\n"
 "width: 200px;\n"
 "height: 40px;")
+        self.apply_sign_in.setCursor(Qt.PointingHandCursor)
         self.apply_sign_in.setObjectName("apply_sign_in")
         self.verticalLayout_2.addWidget(self.apply_sign_in, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.frame)

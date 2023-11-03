@@ -9,6 +9,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QTableWidgetItem
 
 
 class Ui_Dialog(object):
@@ -16,6 +18,7 @@ class Ui_Dialog(object):
         Dialog.setObjectName("Dialog")
         Dialog.resize(1100, 700)
         Dialog.setMinimumSize(QtCore.QSize(1000, 500))
+        Dialog.setStyleSheet("background-color:rgb(26,31,37)")
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.tableWidget = QtWidgets.QTableWidget(Dialog)
@@ -36,9 +39,45 @@ class Ui_Dialog(object):
         #     column_width = total_width * width_ratio
         #     self.tableWidget.setColumnWidth(i, column_width)
 
-
-
         self.tableWidget.setObjectName("tableWidget")
+
+        self.tableWidget.setStyleSheet("""
+            QTableWidget {
+                font-family: Times New Roman;
+                font-size: 16px;
+                background-color: rgb(38, 45, 54);
+                color: #fff;
+                border: 1px solid rgb(225, 225, 225);
+            }
+
+            QTableWidget QTableCornerButton::section {
+                background-color: #000;
+            }
+
+            QTableWidget QTableCornerButton {
+                border: 1px solid #fff; /* Добавляем бордюр для угловой кнопки */
+            }
+        """)
+        self.tableWidget.horizontalHeader().setStyleSheet("""
+        QHeaderView::section {
+            font-family: Times New Roman;
+            background-color: rgb(38, 45, 54);
+            font-size: 16px;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        """)
+        self.tableWidget.verticalHeader().setVisible(False)
+        # self.tableWidget.verticalHeader().setStyleSheet("""
+        # QHeaderView::section {
+        #     text-align: center;
+        #     font-family: Times New Roman;
+        #     background-color: rgb(38, 45, 54);
+        #     font-size: 16px;
+        #     color: #fff;
+        #     border: none;
+        # }
+        # """)
         self.verticalLayout.addWidget(self.tableWidget)
         self.frame = QtWidgets.QFrame(Dialog)
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -46,16 +85,24 @@ class Ui_Dialog(object):
         self.frame.setObjectName("frame")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.addData = QtWidgets.QLineEdit(self.frame)
-        self.addData.setObjectName("addData")
-        self.verticalLayout_2.addWidget(self.addData)
-        self.addDescription = QtWidgets.QLineEdit(self.frame)
-        self.addDescription.setObjectName("addDescription")
-        self.verticalLayout_2.addWidget(self.addDescription)
+        # self.addData = QtWidgets.QLineEdit(self.frame)
+        # self.addData.setObjectName("addData")
+        # self.verticalLayout_2.addWidget(self.addData)
+        # self.addDescription = QtWidgets.QLineEdit(self.frame)
+        # self.addDescription.setObjectName("addDescription")
+        # self.verticalLayout_2.addWidget(self.addDescription)
         self.addItem = QtWidgets.QPushButton(self.frame)
         self.addItem.setObjectName("addItem")
+        self.addItem.setStyleSheet("background-color: rgb(230,179,51);\n"
+                                   "font-size: 16px;\n"
+                                   "font-family: Times New Roman;\n"
+                                   "min-width: 150px;\n"
+                                   "min-height: 30px;\n"
+                                   "color: rgb(255,255,255);\n"
+                                   "border: 1px solid rgba(255, 255, 255,50);\n")
+        self.addItem.setCursor(Qt.PointingHandCursor)
         self.verticalLayout_2.addWidget(self.addItem)
-        self.verticalLayout.addWidget(self.frame, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.verticalLayout.addWidget(self.frame, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -68,6 +115,7 @@ class Ui_Dialog(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
