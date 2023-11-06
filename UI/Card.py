@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QTableWidgetItem
 
 
 class Ui_Dialog(object):
+
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(1100, 700)
@@ -25,19 +26,12 @@ class Ui_Dialog(object):
         self.tableWidget.setRowCount(0)
         self.tableWidget.setColumnCount(3)
 
-        header = ["Data", "Description"]
+        header = ["", "Data", "Description"]
         self.tableWidget.setHorizontalHeaderLabels(header)
         self.tableWidget.setWordWrap(True)
-        self.tableWidget.setColumnWidth(0, 200)
-        self.tableWidget.setColumnWidth(1, 700)
-        self.tableWidget.setColumnHidden(2, True)
-
-        # total_width = self.tableWidget.width()
-        # column_widths = [0.2, 0.8]
-        #
-        # for i, width_ratio in enumerate(column_widths):
-        #     column_width = total_width * width_ratio
-        #     self.tableWidget.setColumnWidth(i, column_width)
+        self.tableWidget.setColumnHidden(0, True)
+        self.tableWidget.setColumnWidth(1, 200)
+        self.tableWidget.setColumnWidth(2, 700)
 
         self.tableWidget.setObjectName("tableWidget")
 
@@ -85,12 +79,6 @@ class Ui_Dialog(object):
         self.frame.setObjectName("frame")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        # self.addData = QtWidgets.QLineEdit(self.frame)
-        # self.addData.setObjectName("addData")
-        # self.verticalLayout_2.addWidget(self.addData)
-        # self.addDescription = QtWidgets.QLineEdit(self.frame)
-        # self.addDescription.setObjectName("addDescription")
-        # self.verticalLayout_2.addWidget(self.addDescription)
         self.addItem = QtWidgets.QPushButton(self.frame)
         self.addItem.setObjectName("addItem")
         self.addItem.setStyleSheet("background-color: rgb(230,179,51);\n"

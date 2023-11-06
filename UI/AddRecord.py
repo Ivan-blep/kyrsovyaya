@@ -54,7 +54,7 @@ class Ui_AddRecord(object):
                                        "height: 40px;")
         self.save_button.setCursor(Qt.PointingHandCursor)
         self.verticalLayout.addWidget(self.frame)
-
+        self.verticalLayout_2.addWidget(self.save_button)
         self.retranslateUi(AddRecord)
         QtCore.QMetaObject.connectSlotsByName(AddRecord)
 

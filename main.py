@@ -16,6 +16,12 @@ from UI.Record import Ui_Record
 from UI.AddRecord import Ui_AddRecord
 
 
+class User:
+    def __init__(self, phone_number):
+        self.phone_number = phone_number
+
+user = None
+
 class AdminPanelDialog(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
@@ -84,12 +90,13 @@ class SignInDialog(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.ui.apply_sign_in.clicked.connect(self.applySignIn)
         self.ui.register_button.clicked.connect(self.openRegister)
+        self.ui.phone_number.setInputMask("+38(000)000-00-00")
 
         enter_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return), self)
         enter_shortcut.activated.connect(self.ui.apply_sign_in.click)
 
     def applySignIn(self):
-
+        global user
         mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
         db = mongo["application"]
         collection = db["users"]
@@ -97,13 +104,14 @@ class SignInDialog(QtWidgets.QDialog):
         phone_number = self.ui.phone_number.text()
         password = self.ui.password.text()
 
-        if phone_number != '' and password != '':
+        if phone_number != '':
             query = {"phone_number": phone_number}
             document = collection.find_one(query)
-            print(document)
-            print(phone_number)
-            # self.openCard(phone_number, document.get("root"))
-            self.checkRoot(phone_number, document.get('root'))
+            if password == document.get('password'):
+                user = User(phone_number)
+                self.checkRoot(phone_number, document.get('root'))
+            else:
+                print("Пароль не верный")
         else:
             print("Введите все данные")
 
@@ -154,7 +162,8 @@ class RegisterDialog(QtWidgets.QDialog):
                 "phone_number": phone_number,
                 "password": password,
                 "e_mail": e_mail,
-                "name": full_name
+                "name": full_name,
+                "root": "user"
             }
             collection.insert_one(new_document)
             self.openSignIn()
@@ -172,33 +181,49 @@ class UserInterface(QtWidgets.QDialog):
         super().__init__()
         self.ui = Ui_UserInterface()
         self.ui.setupUi(self)
-
+        self.root = root
         self.ui.frame_6.setVisible(False)
+        mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
+        db = mongo["application"]
+        self.collection = db["users"]
 
-        # self.phone_number = phone_number
-        self.roo2t = root
-
-        self.ui.card_button.clicked.connect(self.openFindByUser)
-        self.ui.find_button.clicked.connect(self.openCardByUser)
+        if root == 'doctor':
+            self.ui.card_button.clicked.connect(self.openFindByUser)
+            self.ui.find_button.clicked.connect(self.openCardByFindUser)
+        else:
+            self.ui.card_button.clicked.connect(self.openCardByUser)
 
     def openFindByUser(self):
         self.ui.frame_6.setVisible(True)
         self.ui.frame_6.setEnabled(True)
+        self.ui.phone_number_by_card.setInputMask("+38(000)000-00-00")
 
     def openCardByUser(self):
-        mongo = MongoClient("mongodb+srv://ivanchiktumko:qwaeszrdxtfcygv@cluster0.dlvy14y.mongodb.net/")
-        db = mongo["application"]
-        collection = db["users"]
+        try:
+            phone_number = user.phone_number
 
+            if phone_number:
+                query = {"phone_number": phone_number}
+                document = self.collection.find_one(query)
+
+                if document:
+                    self.ui.phone_number_by_card.clear()
+                    dialog = CardDialog(phone_number, self.root)
+                    dialog.exec()
+        except Exception as e:
+            print(e)
+
+
+    def openCardByFindUser(self):
         user_phone_number = self.ui.phone_number_by_card.text()
 
         if user_phone_number:
             query = {"phone_number": user_phone_number}
-            document = collection.find_one(query)
+            document = self.collection.find_one(query)
 
             if document:
                 self.ui.phone_number_by_card.clear()
-                dialog = CardDialog(user_phone_number, self.roo2t)
+                dialog = CardDialog(user_phone_number, self.root)
                 dialog.exec()
 
 
@@ -216,7 +241,10 @@ class AddRecordDialog(QtWidgets.QDialog):
     def addToTable(self):
         data = self.ui.data.toPlainText()
         description = self.ui.textEdit.toPlainText()
-        self.card.addRecordToTable(data, description)
+        try:
+            self.card.addRecordToTable(data, description)
+        except Exception as e:
+            print(e)
         self.card.getAllRecord()
         self.close()
 
@@ -242,6 +270,13 @@ class RecordDialog(QtWidgets.QDialog):
             self.ui.save_button.setVisible(True)
             self.ui.save_button.setEnabled(True)
             self.ui.textEdit.setReadOnly(False)
+            self.ui.data.setReadOnly(True)
+        else:
+            self.ui.save_button.setVisible(False)
+            self.ui.save_button.setEnabled(False)
+            self.ui.textEdit.setReadOnly(True)
+            self.ui.data.setReadOnly(True)
+
 
         self.setData()
 
@@ -249,7 +284,7 @@ class RecordDialog(QtWidgets.QDialog):
         try:
             result = self.collection.update_one({
                 "_id": ObjectId(self._id)
-                },
+            },
                 {
                     "$set":
                         {
@@ -306,9 +341,10 @@ class CardDialog(QtWidgets.QDialog):
 
             for i, document in enumerate(data):
                 print(document)
-                self.ui.tableWidget.setItem(i, 0, QTableWidgetItem(document.get('data')))
-                self.ui.tableWidget.setItem(i, 1, QTableWidgetItem(document.get('description')))
-                self.ui.tableWidget.setItem(i, 2, QTableWidgetItem(str(document.get("_id"))))
+                self.ui.tableWidget.setItem(i, 0, QTableWidgetItem(str(document.get("_id"))))
+                self.ui.tableWidget.setItem(i, 1, QTableWidgetItem(document.get('data')))
+                self.ui.tableWidget.setItem(i, 2, QTableWidgetItem(document.get('description')))
+
 
         except Exception as e:
             print("Произошла ошибка:", str(e))
@@ -325,11 +361,11 @@ class CardDialog(QtWidgets.QDialog):
 
         self.ui.tableWidget.insertRow(current_row_count)
 
-        self.ui.tableWidget.setItem(current_row_count, 0, QTableWidgetItem(data))
-        self.ui.tableWidget.setItem(current_row_count, 1, QTableWidgetItem(description))
+        self.ui.tableWidget.setItem(current_row_count, 1, QTableWidgetItem(data))
+        self.ui.tableWidget.setItem(current_row_count, 2, QTableWidgetItem(description))
 
-        self.ui.addData.clear()
-        self.ui.addDescription.clear()
+        # self.ui.addData.clear()
+        # self.ui.addDescription.clear()
 
         self.addItemToDataBase(data, description)
 
@@ -344,13 +380,13 @@ class CardDialog(QtWidgets.QDialog):
 
     def rowClicked(self, row, col):
         if row >= 0:
-            data_item = self.ui.tableWidget.item(row, 0)
-            description_item = self.ui.tableWidget.item(row, 1)
+            data_item = self.ui.tableWidget.item(row, 1)
+            description_item = self.ui.tableWidget.item(row, 2)
 
             if data_item is not None and description_item is not None:
                 data = data_item.text()
                 description = description_item.text()
-                _id = self.ui.tableWidget.item(row, 2).text()
+                _id = self.ui.tableWidget.item(row, 0).text()
 
                 item = {"data": data, "description": description, "_id": _id}
                 print(f"Нажатие на строку {row}, data: {data}, description: {description}, {_id}")

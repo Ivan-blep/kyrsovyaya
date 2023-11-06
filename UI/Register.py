@@ -18,8 +18,7 @@ class Ui_Register(object):
         Register.resize(500, 600)
         Register.setMinimumSize(QtCore.QSize(500, 600))
         Register.setMaximumSize(QtCore.QSize(1000, 16777215))
-        Register.setStyleSheet("background-color:rgb(26,31,37);\n"
-"")
+        Register.setStyleSheet("background-color:rgb(26,31,37);\n")
         self.verticalLayout = QtWidgets.QVBoxLayout(Register)
         self.verticalLayout.setObjectName("verticalLayout")
         self.frame_3 = QtWidgets.QFrame(Register)
