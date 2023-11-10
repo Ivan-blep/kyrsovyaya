@@ -24,14 +24,15 @@ class Ui_Dialog(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.tableWidget = QtWidgets.QTableWidget(Dialog)
         self.tableWidget.setRowCount(0)
-        self.tableWidget.setColumnCount(3)
+        self.tableWidget.setColumnCount(4)
 
-        header = ["", "Data", "Description"]
+        header = ["", "Data", "Description", "Doctor"]
         self.tableWidget.setHorizontalHeaderLabels(header)
         self.tableWidget.setWordWrap(True)
         self.tableWidget.setColumnHidden(0, True)
         self.tableWidget.setColumnWidth(1, 200)
-        self.tableWidget.setColumnWidth(2, 700)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        self.tableWidget.setColumnWidth(3, 200)
 
         self.tableWidget.setObjectName("tableWidget")
 
@@ -62,16 +63,6 @@ class Ui_Dialog(object):
         }
         """)
         self.tableWidget.verticalHeader().setVisible(False)
-        # self.tableWidget.verticalHeader().setStyleSheet("""
-        # QHeaderView::section {
-        #     text-align: center;
-        #     font-family: Times New Roman;
-        #     background-color: rgb(38, 45, 54);
-        #     font-size: 16px;
-        #     color: #fff;
-        #     border: none;
-        # }
-        # """)
         self.verticalLayout.addWidget(self.tableWidget)
         self.frame = QtWidgets.QFrame(Dialog)
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
